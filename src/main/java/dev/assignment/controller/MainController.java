@@ -16,11 +16,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.control.ProgressIndicator;
 
-
 public class MainController {
 
     @FXML
-    private StackPane root; 
+    private StackPane root;
 
     @FXML
     private SessionSidebar sessionSidebar;
@@ -59,16 +58,20 @@ public class MainController {
     private Button toggleThemeButton;
 
     private ChatSessionController chatSessionController;
-    private boolean isDarkMode = false; //track theme
+    private boolean isDarkMode = false; // track theme
 
-    @FXML private Pane loadingOverlay;
-    @FXML private ProgressIndicator loadingSpinner;
+    @FXML
+    private Pane loadingOverlay;
+    @FXML
+    private ProgressIndicator loadingSpinner;
 
     @FXML
     private void initialize() {
 
-        if (loadingOverlay != null) loadingOverlay.setVisible(false);
-        if (loadingSpinner != null) loadingSpinner.setVisible(false);
+        if (loadingOverlay != null)
+            loadingOverlay.setVisible(false);
+        if (loadingSpinner != null)
+            loadingSpinner.setVisible(false);
 
         // Initialize database
         DatabaseService databaseService = DatabaseService.getInstance();
@@ -148,9 +151,18 @@ public class MainController {
         });
 
         // Attach toggle theme button
-        if (toggleThemeButton != null){
-            toggleThemeButton.setOnAction( e -> handleToggleTheme());
+        if (toggleThemeButton != null) {
+            toggleThemeButton.setOnAction(e -> handleToggleTheme());
         }
+
+        // Load default theme (light) on startup
+        javafx.application.Platform.runLater(() -> {
+            Scene scene = root.getScene();
+            if (scene != null) {
+                String lightCss = getClass().getResource("/dev/assignment/css/light.css").toExternalForm();
+                scene.getStylesheets().add(lightCss);
+            }
+        });
     }
 
     // >>> ADDED — spinner controls
@@ -197,10 +209,11 @@ public class MainController {
     @FXML
     private void handleToggleTheme() {
         var scene = toggleThemeButton.getScene();
-        if (scene == null) return;
+        if (scene == null)
+            return;
 
-        var lightURL = getClass().getResource("/dev/assignment/light.css");
-        var darkURL = getClass().getResource("/dev/assignment/dark.css");
+        var lightURL = getClass().getResource("/dev/assignment/css/light.css");
+        var darkURL = getClass().getResource("/dev/assignment/css/dark.css");
 
         if (lightURL == null || darkURL == null) {
             System.out.println("CSS NOT FOUND – check your resource paths!");
@@ -220,18 +233,19 @@ public class MainController {
 
         isDarkMode = !isDarkMode;
     }
-    
+
     @FXML
     private ToggleButton themeSwitch;
-    
+
     @FXML
     private void handleThemeSwitch() {
         boolean dark = themeSwitch.isSelected();
         Scene scene = themeSwitch.getScene();
-        if (scene == null) return;
+        if (scene == null)
+            return;
 
-        String darkCss = getClass().getResource("/dev/assignment/dark.css").toExternalForm();
-        String lightCss = getClass().getResource("/dev/assignment/light.css").toExternalForm();
+        String darkCss = getClass().getResource("/dev/assignment/css/dark.css").toExternalForm();
+        String lightCss = getClass().getResource("/dev/assignment/css/light.css").toExternalForm();
 
         scene.getStylesheets().removeAll(darkCss, lightCss);
         scene.getStylesheets().add(dark ? darkCss : lightCss);

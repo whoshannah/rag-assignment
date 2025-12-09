@@ -1,4 +1,11 @@
+#set page(numbering: "1");
 #set par(justify: true, leading: 1.2em);
+
+#set page(header: [
+  _Group 04 Project Part A_
+  #h(1fr)
+  ITS66704 Adv. Programming (Sep 2025)
+])
 
 #set heading(numbering: "1.")
 
@@ -229,7 +236,7 @@ Shown below are the use case diagrams for the main functionalities of the RAG sy
 
 The interface is designed to be simple and user-friendly. The left sidebar allows users to manage their sessions. The main area displays the chat history, where users can see their questions and the AI's responses in a conversational format. The bottom input box is where users type their questions. The "Manage Knowledge Base" button opens a dialog for uploading and organizing documents within the selected session.
 
-Due to time constraint and the lack of experiences of group members, we have decided not to add too much CSS styling to keep the focus on functionality and clarity. A separate, more advanced version of this project has been developed as a personal project by the group leader as a continuation of this assignment. Screenshot #link("https://github.com/user-attachments/assets/36d18ab0-1cf2-4a52-9639-c2bbb4030ba7")[here].
+Due to time constraint and the lack of experiences of group members, we have decided not to add too much CSS styling to keep the focus on functionality and clarity. However, continuous efforts will still be made to improve the system in future iterations.
 
 = Class Diagram & OOP Design
 

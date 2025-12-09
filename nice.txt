@@ -1,0 +1,10 @@
+Melvin Chia is 19 years old.
+He is an amateur web developer.
+He is a guy who has 5 years of experience in full-stack web development.
+He is in love with React JS.
+He is currently studying in Taylor's University, majoring in Software Engineering.
+
+Kelvin Chia is 28 years old.
+He is an a 2D artist.
+He has more than 10 years of experience in drawing anime illustration.
+Melvin Chia is the younger brother of Kelvin Chia.

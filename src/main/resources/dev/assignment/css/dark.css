@@ -1,0 +1,116 @@
+.root, .vbox, .hbox, .pane {
+  -fx-background-color: #1C1C1E;
+}
+
+.label, .text, .button, .menu-item, .list-cell, .table-cell,
+.text-field, .text-area, .check-box, .radio-button {
+  -fx-text-fill: #FFFFFF;
+}
+
+.text-area .content {
+  -fx-fill: #FFFFFF;
+}
+
+.list-view .list-cell {
+  -fx-text-fill: #FFFFFF;
+}
+
+.split-pane {
+  -fx-background-color: transparent;
+}
+
+.split-pane-divider {
+  -fx-background-color: #3A3A3C;
+}
+
+.scroll-pane {
+  -fx-background-color: transparent;
+}
+
+.scroll-pane .viewport {
+  -fx-background-color: #1C1C1E;
+}
+
+.card, .message-bubble {
+  -fx-background-radius: 12;
+  -fx-padding: 10 14 10 14;
+  -fx-background-color: #2C2C2E;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.30), 12, 0, 0, 3);
+}
+
+.label {
+  -fx-text-fill: #F2F2F7;
+}
+
+.text-area-input {
+  -fx-background-color: #2C2C2E;
+  -fx-text-fill: #F2F2F7;
+  -fx-background-radius: 10;
+  -fx-padding: 12;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.45), 10, 0, 0, 2);
+  -fx-border-color: #48484A;
+  -fx-border-radius: 10;
+  -fx-border-width: 1;
+}
+
+.text-area-input .content,
+.text-area-input .scroll-pane,
+.text-area-input .scroll-pane .viewport,
+.text-area-input .scroll-pane .content {
+  -fx-background-color: #2C2C2E;
+}
+
+.button {
+  -fx-background-radius: 8;
+  -fx-background-color: #3A3A3C;
+  -fx-text-fill: #F2F2F7;
+  -fx-border-color: #48484A;
+  -fx-border-radius: 8;
+  -fx-border-width: 1;
+}
+
+.button:hover {
+  -fx-background-color: #48484A;
+}
+
+#statusLabel, #modelLabel {
+  -fx-text-fill: #F2F2F7;
+}
+
+#bottomBar {
+  -fx-border-color: #3A3A3C;
+}
+
+.context-menu {
+  -fx-background-color: #2C2C2E;
+  -fx-background-radius: 8;
+  -fx-padding: 4;
+}
+
+.menu-item {
+  -fx-background-color: transparent;
+}
+
+.menu-item:hover, .menu-item:focused {
+  -fx-background-color: #3A3A3C;
+}
+
+.menu-item .label {
+  -fx-text-fill: #F2F2F7;
+}
+
+.user-message {
+  -fx-background-color: #0A84FF;
+  -fx-background-radius: 4;
+  -fx-border-color: #0A84FF;
+  -fx-border-radius: 4;
+  -fx-text-fill: #FFFFFF;
+}
+
+.ai-message {
+  -fx-background-color: #3A3A3C;
+  -fx-background-radius: 4;
+  -fx-border-color: #48484A;
+  -fx-border-radius: 4;
+  -fx-text-fill: #F2F2F7;
+}

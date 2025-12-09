@@ -1,0 +1,99 @@
+.root, .vbox, .hbox, .pane {
+  -fx-background-color: #F5F5F7;
+}
+
+.split-pane {
+  -fx-background-color: transparent;
+}
+
+.split-pane-divider {
+  -fx-background-color: #E0E0E0;
+}
+
+.scroll-pane {
+  -fx-background-color: transparent;
+}
+
+.scroll-pane .viewport {
+  -fx-background-color: #F5F5F7;
+}
+
+.card, .message-bubble {
+  -fx-background-radius: 12;
+  -fx-padding: 10 14 10 14;
+  -fx-background-color: white;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 10, 0, 0, 2);
+}
+
+.label {
+  -fx-text-fill: #1C1C1E;
+}
+
+.text-area-input {
+  -fx-background-color: #EBEBED;
+  -fx-text-fill: #1C1C1E;
+  -fx-background-radius: 10;
+  -fx-padding: 12;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 8, 0, 0, 2);
+  -fx-border-color: #D0D0D5;
+  -fx-border-radius: 10;
+  -fx-border-width: 1;
+}
+
+.text-area-input .content,
+.text-area-input .scroll-pane,
+.text-area-input .scroll-pane .viewport,
+.text-area-input .scroll-pane .content {
+  -fx-background-color: #EBEBED;
+}
+
+.button {
+  -fx-background-radius: 8;
+  -fx-background-color: #E8E8ED;
+  -fx-text-fill: #1C1C1E;
+  -fx-border-color: #D0D0D5;
+  -fx-border-radius: 8;
+  -fx-border-width: 1;
+}
+
+.button:hover {
+  -fx-background-color: #D0D0D5;
+}
+
+.user-message {
+  -fx-background-color: white;
+  -fx-background-radius: 4;
+  -fx-border-color: lightgrey;
+  -fx-border-radius: 4;
+  -fx-text-fill: #1C1C1E;
+}
+
+.ai-message {
+  -fx-background-color: #E8E8ED;
+  -fx-background-radius: 4;
+  -fx-border-color: #D0D0D5;
+  -fx-border-radius: 4;
+  -fx-text-fill: #1C1C1E;
+}
+
+#bottomBar {
+  -fx-border-color: #E0E0E0;
+}
+
+.context-menu {
+  -fx-background-color: white;
+  -fx-background-radius: 8;
+  -fx-padding: 4;
+}
+
+.menu-item {
+  -fx-background-color: transparent;
+}
+
+.menu-item:hover, .menu-item:focused {
+  -fx-background-color: #E8E8ED;
+}
+
+.menu-item .label {
+  -fx-text-fill: #1C1C1E;
+}

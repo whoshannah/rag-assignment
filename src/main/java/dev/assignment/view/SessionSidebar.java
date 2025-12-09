@@ -60,7 +60,7 @@ public class SessionSidebar extends VBox {
         // Add icon to button
         try {
             ImageView icon = new ImageView(new Image(
-                    getClass().getResourceAsStream("/dev/assignment/uil--comment-plus.png")));
+                    getClass().getResourceAsStream("/dev/assignment/assets/uil--comment-plus.png")));
             icon.setFitHeight(150.0);
             icon.setFitWidth(18.0);
             icon.setPreserveRatio(true);

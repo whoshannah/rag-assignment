@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+<?import dev.assignment.view.SessionSidebar?>
+
+<StackPane fx:id="root" prefHeight="600.0" prefWidth="900.0"
+           xmlns="http://javafx.com/javafx/25"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="dev.assignment.controller.MainController"
+           stylesheets="@../css/global.css">
+    <VBox prefHeight="600.0" prefWidth="900.0">
+        <SplitPane dividerPositions="0.251" VBox.vgrow="ALWAYS">
+            <SessionSidebar fx:id="sessionSidebar" SplitPane.resizableWithParent="false"/>
+            <VBox>
+                <HBox alignment="CENTER" spacing="10" styleClass="top-hbox">
+                    <VBox>
+                        <Label fx:id="sessionNameLabel" text="No Session Selected"/>
+                        <Label fx:id="sessionCreatedLabel" text=""/>
+                    </VBox>
+                    <Pane HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="clearSessionButton" text="Clear Session"
+                            visible="false" managed="false"
+                            onAction="#handleClearSession"/>
+                    <Button fx:id="manageKnowledgebaseButton" text="Manage Knowledgebase"
+                            visible="false" managed="false"
+                            onAction="#handleManageKnowledgebase"/>
+                    <ToggleButton fx:id="themeSwitch" onAction="#handleThemeSwitch" styleClass="theme-switch">
+                        <graphic>
+                            <StackPane styleClass="switch-background">
+                                <Circle radius="8" styleClass="switch-thumb"/>
+                            </StackPane>
+                        </graphic>
+                    </ToggleButton>
+                </HBox>
+                <ScrollPane fx:id="chatScrollPane" fitToHeight="true" fitToWidth="true"
+                            hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                    <VBox fx:id="chatContainer" alignment="TOP_CENTER" spacing="6"/>
+                </ScrollPane>
+                <HBox fx:id="messageInputBox" alignment="CENTER" spacing="10" styleClass="message-input-box">
+                    <TextArea fx:id="messageInput" promptText="Enter your prompt..."
+                              wrapText="true" HBox.hgrow="ALWAYS" styleClass="text-area-input"/>
+                    <Button fx:id="sendButton" text="Send" onAction="#handleSendMessage"/>
+                </HBox>
+            </VBox>
+        </SplitPane>
+        <HBox fx:id="bottomBar" alignment="CENTER_LEFT" spacing="5">
+            <Label fx:id="statusLabel" text="Ready" HBox.hgrow="ALWAYS"/>
+            <Pane HBox.hgrow="ALWAYS"/>
+            <Label fx:id="modelLabel" text="Model: GPT-4o-mini"/>
+        </HBox>
+    </VBox>
+    <Pane fx:id="loadingOverlay" visible="false" pickOnBounds="true" styleClass="loading-overlay">
+        <ProgressIndicator fx:id="loadingSpinner" prefWidth="60" prefHeight="60" visible="false"/>
+    </Pane>
+</StackPane>

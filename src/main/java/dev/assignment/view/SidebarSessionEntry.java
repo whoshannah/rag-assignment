@@ -61,7 +61,7 @@ public class SidebarSessionEntry extends HBox {
 
         try {
             menuButton.getStylesheets().add(
-                    getClass().getResource("/dev/assignment/main.css").toExternalForm());
+                    getClass().getResource("/dev/assignment/css/global.css").toExternalForm());
         } catch (Exception e) {
             // CSS not found, continue without it
         }
@@ -70,7 +70,7 @@ public class SidebarSessionEntry extends HBox {
 
         try {
             ImageView icon = new ImageView(new Image(
-                    getClass().getResourceAsStream("/dev/assignment/uil--ellipsis-v.png")));
+                    getClass().getResourceAsStream("/dev/assignment/assets/uil--ellipsis-v.png")));
             icon.setFitHeight(16);
             icon.setFitWidth(16);
             icon.setPreserveRatio(true);

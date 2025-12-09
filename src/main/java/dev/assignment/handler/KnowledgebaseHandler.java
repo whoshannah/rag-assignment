@@ -155,7 +155,7 @@ public class KnowledgebaseHandler {
         }
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/dev/assignment/manage_resources.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/dev/assignment/fxml/manage_resources.fxml"));
             Parent root = loader.load();
 
             // Pass resource service to the controller

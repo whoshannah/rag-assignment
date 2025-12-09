@@ -28,18 +28,10 @@ public final class ChatMessageEntry extends VBox {
         // Set alignment based on message type
         if (message.isUser()) {
             messageContainer.setAlignment(Pos.CENTER_RIGHT);
-            messageLabel.setStyle(
-                    "-fx-background-color: white; " +
-                            "-fx-background-radius: 4; " +
-                            "-fx-border-color: lightgrey; " +
-                            "-fx-border-radius: 4;");
+            messageLabel.getStyleClass().add("user-message");
         } else {
             messageContainer.setAlignment(Pos.CENTER_LEFT);
-            messageLabel.setStyle(
-                    "-fx-background-color: lightgrey; " +
-                            "-fx-background-radius: 4; " +
-                            "-fx-border-color: grey; " +
-                            "-fx-border-radius: 4;");
+            messageLabel.getStyleClass().add("ai-message");
         }
 
         messageLabel.setPadding(new Insets(10, 10, 10, 10));

@@ -27,7 +27,7 @@ public class ContentViewer {
      * @throws IOException if the FXML file cannot be loaded
      */
     public ContentViewer(Resource resource, Window owner) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/dev/assignment/content_viewer.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/dev/assignment/fxml/content_viewer.fxml"));
         Parent root = loader.load();
 
         controller = loader.getController();
