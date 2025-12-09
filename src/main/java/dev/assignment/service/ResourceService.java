@@ -186,7 +186,6 @@ public class ResourceService {
             throw new IOException("File already exists: " + fileName);
         }
 
-        // Copy file directly
         Files.copy(sourceFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
 
         return new Resource(fileName, destinationPath.toFile());

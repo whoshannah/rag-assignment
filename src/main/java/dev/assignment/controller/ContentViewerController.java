@@ -14,13 +14,13 @@ import javafx.stage.Stage;
 public class ContentViewerController {
 
     @FXML
-    private VBox root; // Add fx:id="root" in FXML top-level VBox
+    private VBox root;
     @FXML
     private TextArea contentArea;
 
     private Resource resource;
 
-    private boolean isDarkMode = false; // Track theme
+    private boolean isDarkMode = false;
 
     /**
      * Set the resource to display

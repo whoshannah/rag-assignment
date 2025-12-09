@@ -31,21 +31,20 @@ public class ProgressDialog {
         stage.setTitle("Importing Resources");
         stage.setResizable(false);
 
-        // Create UI components
         VBox root = new VBox(15);
         root.setAlignment(Pos.CENTER);
         root.setPadding(new Insets(20));
         root.setPrefWidth(400);
 
         statusLabel = new Label("Importing files...");
-        statusLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+        statusLabel.getStyleClass().add("progress-status");
 
         progressBar = new ProgressBar(0);
         progressBar.setPrefWidth(360);
         progressBar.setPrefHeight(25);
 
         detailLabel = new Label("");
-        detailLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #606060;");
+        detailLabel.getStyleClass().add("progress-detail");
         detailLabel.setWrapText(true);
         detailLabel.setPrefWidth(360);
 
@@ -54,7 +53,6 @@ public class ProgressDialog {
         Scene scene = new Scene(root);
         stage.setScene(scene);
 
-        // Handle window close request
         stage.setOnCloseRequest(event -> {
             cancelled = true;
             if (onCancelCallback != null) {

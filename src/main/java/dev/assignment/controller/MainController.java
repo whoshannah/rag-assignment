@@ -58,7 +58,7 @@ public class MainController {
     private Button toggleThemeButton;
 
     private ChatSessionController chatSessionController;
-    private boolean isDarkMode = false; // track theme
+    private boolean isDarkMode = false;
 
     @FXML
     private Pane loadingOverlay;
@@ -73,7 +73,6 @@ public class MainController {
         if (loadingSpinner != null)
             loadingSpinner.setVisible(false);
 
-        // Initialize database
         DatabaseService databaseService = DatabaseService.getInstance();
         if (databaseService == null) {
             AlertHelper.showError(
@@ -81,7 +80,6 @@ public class MainController {
                     "Failed to Initialize Database",
                     "The application database could not be initialized. Please check file permissions and disk space.\n\nThe application will continue with limited functionality.");
 
-            // Disable session-related features
             if (sessionSidebar != null) {
                 sessionSidebar.setDisable(true);
             }
@@ -93,7 +91,6 @@ public class MainController {
             return;
         }
 
-        // Initialize API key service and load key
         APIKeyService apiKeyService = APIKeyService.getInstance();
         boolean hasApiKey = apiKeyService.loadApiKey();
 
@@ -125,7 +122,6 @@ public class MainController {
             messageInput.setDisable(true);
         }
 
-        // Initialize chat session controller
         chatSessionController = new ChatSessionController(
                 sessionNameLabel,
                 sessionCreatedLabel,
@@ -138,24 +134,19 @@ public class MainController {
                 clearSessionButton,
                 sessionSidebar);
 
-        // Set up sidebar callbacks
         sessionSidebar.setOnSessionSelected(chatSessionController::handleSessionSelected);
         sessionSidebar.setOnSessionChanged(chatSessionController::handleSessionChanged);
 
-        // Load sessions
         sessionSidebar.loadSessions();
 
-        // Auto scroll
         chatContainer.heightProperty().addListener((obs, oldVal, newVal) -> {
             chatScrollPane.setVvalue(1.0);
         });
 
-        // Attach toggle theme button
         if (toggleThemeButton != null) {
             toggleThemeButton.setOnAction(e -> handleToggleTheme());
         }
 
-        // Load default theme (light) on startup
         javafx.application.Platform.runLater(() -> {
             Scene scene = root.getScene();
             if (scene != null) {
@@ -165,7 +156,6 @@ public class MainController {
         });
     }
 
-    // >>> ADDED — spinner controls
     private void showLoading() {
         javafx.application.Platform.runLater(() -> {
             loadingOverlay.setVisible(true);
@@ -179,7 +169,6 @@ public class MainController {
             loadingSpinner.setVisible(false);
         });
     }
-    // <<< ADDED
 
     @FXML
     private void handleManageKnowledgebase() {
@@ -193,11 +182,7 @@ public class MainController {
 
     @FXML
     private void handleSendMessage() {
-
-        // >>> ADDED — show spinner immediately
         showLoading();
-
-        // wrap original send logic
         new Thread(() -> {
             chatSessionController.handleSendMessage();
             javafx.application.Platform.runLater(() -> {
@@ -216,7 +201,6 @@ public class MainController {
         var darkURL = getClass().getResource("/dev/assignment/css/dark.css");
 
         if (lightURL == null || darkURL == null) {
-            System.out.println("CSS NOT FOUND – check your resource paths!");
             return;
         }
 

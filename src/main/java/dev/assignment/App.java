@@ -20,12 +20,10 @@ public class App extends Application {
         double screenWidth = javafx.stage.Screen.getPrimary().getBounds().getWidth();
         double screenHeight = javafx.stage.Screen.getPrimary().getBounds().getHeight();
 
-        // Make it so that there is a little bit of margin around the app window
         scene = new Scene(loadFXML("main"), screenWidth * 0.8, screenHeight * 0.8);
         stage.setScene(scene);
         stage.show();
 
-        // Align the window to the center of the screen
         stage.setX((screenWidth - stage.getWidth()) / 2);
         stage.setY((screenHeight - stage.getHeight()) / 2);
     }

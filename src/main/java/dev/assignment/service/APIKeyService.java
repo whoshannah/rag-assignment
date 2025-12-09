@@ -41,10 +41,8 @@ public class APIKeyService {
      * @return true if API key was successfully loaded, false otherwise
      */
     public boolean loadApiKey() {
-        // Try to load from .env file
         apiKey = loadFromEnv();
 
-        // If no API key found, prompt user
         if (apiKey == null || apiKey.trim().isEmpty()) {
             logger.info("No API key found in .env, prompting user");
             return promptForApiKey();
@@ -145,7 +143,6 @@ public class APIKeyService {
         }
 
         try {
-            // Make a minimal test request to validate the key
             dev.langchain4j.model.openai.OpenAiChatModel testModel = dev.langchain4j.model.openai.OpenAiChatModel
                     .builder()
                     .apiKey(apiKey)
@@ -153,7 +150,6 @@ public class APIKeyService {
                     .maxTokens(1)
                     .build();
 
-            // Try to generate a minimal response
             testModel.chat("test");
             logger.info("API key validation successful");
             return true;

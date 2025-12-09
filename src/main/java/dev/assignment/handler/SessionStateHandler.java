@@ -144,7 +144,6 @@ public class SessionStateHandler {
             return;
         }
 
-        // Detect changes
         String oldModel = currentSession.getModel();
         String newModel = updatedSession.getModel();
         String oldName = currentSession.getName();
@@ -153,7 +152,6 @@ public class SessionStateHandler {
         boolean nameChanged = !oldName.equals(newName);
         boolean modelChanged = !oldModel.equals(newModel);
 
-        // Log all changes
         if (nameChanged) {
             logger.info("Session name changed: '{}' -> '{}'", oldName, newName);
         }
@@ -165,11 +163,9 @@ public class SessionStateHandler {
             logger.debug("No changes detected in session properties");
         }
 
-        // Update current session reference
         currentSession = updatedSession;
         updateSessionInfoDisplay(currentSession);
 
-        // Reinitialize RAGService if needed
         if (modelChanged) {
             if (!APIKeyService.getInstance().hasApiKey()) {
                 logger.warn("API key not available, cannot reinitialize RAGService");

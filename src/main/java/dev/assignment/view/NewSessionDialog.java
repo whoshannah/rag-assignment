@@ -28,7 +28,6 @@ public class NewSessionDialog {
         dialog.setTitle("New Session");
         dialog.setHeaderText("Create a new session");
 
-        // Create form fields
         Label nameLabel = new Label("Session Name:");
         nameField = new TextField();
         nameField.setPrefWidth(300);
@@ -39,7 +38,6 @@ public class NewSessionDialog {
         modelComboBox.setValue(Constants.DEFAULT_MODEL);
         modelComboBox.setPrefWidth(300);
 
-        // Create layout
         VBox content = new VBox(10);
         content.setPadding(new Insets(10));
         content.getChildren().addAll(

@@ -36,7 +36,6 @@ public class DocumentIndexingService {
     private final EmbeddingStore<TextSegment> embeddingStore;
     private final Map<String, Long> indexedFiles;
 
-    // Progress callback interface
     public interface ProgressCallback {
         void onProgress(String message, int current, int total);
     }
@@ -70,7 +69,6 @@ public class DocumentIndexingService {
         logger.debug("Starting incremental indexing");
         logger.debug("Found {} files in directory", files.length);
 
-        // First pass: determine what needs to be indexed
         Set<String> currentFiles = new HashSet<>();
         List<File> filesToIndex = new ArrayList<>();
 
@@ -80,7 +78,6 @@ public class DocumentIndexingService {
                 currentFiles.add(fileName);
                 long lastModified = file.lastModified();
 
-                // Check if file needs indexing
                 if (!indexedFiles.containsKey(fileName) || indexedFiles.get(fileName) != lastModified) {
                     filesToIndex.add(file);
                 }
@@ -94,7 +91,6 @@ public class DocumentIndexingService {
             progressCallback.onProgress("Starting indexing...", 0, totalSteps);
         }
 
-        // Index files with progress updates
         int newIndexed = 0;
         int updated = 0;
 
@@ -110,7 +106,6 @@ public class DocumentIndexingService {
                 progressCallback.onProgress("Indexing " + fileName + "...", currentStep, totalSteps);
             }
 
-            // Remove old segments if file was modified
             if (indexedFiles.containsKey(fileName)) {
                 removeFileFromIndex(fileName);
                 updated++;
@@ -122,7 +117,6 @@ public class DocumentIndexingService {
             indexedFiles.put(fileName, lastModified);
         }
 
-        // Remove deleted files from index
         Set<String> deletedFiles = new HashSet<>(indexedFiles.keySet());
         deletedFiles.removeAll(currentFiles);
 
@@ -134,7 +128,6 @@ public class DocumentIndexingService {
 
         logger.info("Indexing complete. New: {}, Updated: {}, Deleted: {}", newIndexed, updated, deletedFiles.size());
 
-        // Save to cache if there were changes
         if (newIndexed > 0 || updated > 0 || !deletedFiles.isEmpty()) {
             if (progressCallback != null) {
                 progressCallback.onProgress("Saving cache...", totalSteps, totalSteps);
@@ -167,7 +160,6 @@ public class DocumentIndexingService {
 
         logger.debug("Indexing single file: {}", fileName);
 
-        // Remove old segments if file exists
         if (indexedFiles.containsKey(fileName)) {
             removeFileFromIndex(fileName);
         }
@@ -175,7 +167,6 @@ public class DocumentIndexingService {
         indexDocument(file);
         indexedFiles.put(fileName, lastModified);
 
-        // Save to cache
         EmbeddingCacheService.saveCache(sessionId, embeddingStore, indexedFiles);
     }
 
@@ -188,7 +179,6 @@ public class DocumentIndexingService {
         removeFileFromIndex(fileName);
         indexedFiles.remove(fileName);
 
-        // Save to cache
         EmbeddingCacheService.saveCache(sessionId, embeddingStore, indexedFiles);
     }
 
@@ -196,10 +186,6 @@ public class DocumentIndexingService {
      * Remove all segments of a specific file from the index
      */
     private void removeFileFromIndex(String fileName) {
-        // This is a workaround since InMemoryEmbeddingStore doesn't have a direct
-        // remove by metadata
-        // We'll need to rebuild the store without the file's segments
-
         List<EmbeddingMatch<TextSegment>> allEmbeddings = embeddingStore.search(
                 EmbeddingSearchRequest.builder()
                         .queryEmbedding(new Embedding(new float[1536])) // dummy embedding
@@ -227,17 +213,13 @@ public class DocumentIndexingService {
     private void indexDocument(File file) throws IOException {
         String content = Files.readString(file.toPath());
 
-        // Create document with metadata
         Metadata metadata = new Metadata();
         metadata.put("fileName", file.getName());
         Document document = Document.from(content, metadata);
 
-        // Split document into segments
         List<TextSegment> segments = recursive(500, 50).split(document);
 
-        // Embed and store each segment with metadata
         for (TextSegment segment : segments) {
-            // Ensure metadata is preserved in each segment
             Metadata segmentMetadata = new Metadata();
             segmentMetadata.put("fileName", file.getName());
             TextSegment segmentWithMetadata = TextSegment.from(segment.text(), segmentMetadata);

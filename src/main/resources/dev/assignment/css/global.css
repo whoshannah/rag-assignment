@@ -83,3 +83,65 @@
 .loading-overlay {
   -fx-background-color: rgba(0, 0, 0, 0.15);
 }
+
+/* Chat area message (centered info/empty message) */
+.chat-area-message {
+  -fx-text-fill: #909090;
+  -fx-font-size: 14px;
+  -fx-text-alignment: center;
+}
+
+/* Sources label for AI messages */
+.sources-label {
+  -fx-text-fill: #909090;
+  -fx-font-size: 11px;
+}
+
+/* Sidebar session entry */
+.sidebar-session-entry {
+  -fx-cursor: hand;
+  -fx-padding: 4 10 0 0;
+}
+
+/* Session name label */
+.session-name {
+  -fx-font-size: 13px;
+}
+
+.session-name-selected {
+  -fx-font-weight: bold;
+  -fx-font-size: 13px;
+}
+
+/* Transparent menu button */
+.menu-button-transparent {
+  -fx-background-color: transparent;
+}
+
+/* Muted/secondary labels */
+.muted-label {
+  -fx-text-fill: #909090;
+  -fx-font-size: 13px;
+}
+
+.error-label {
+  -fx-text-fill: #ff0000;
+  -fx-font-size: 13px;
+}
+
+/* Resource list cell */
+.resource-count {
+  -fx-text-fill: #909090;
+  -fx-font-size: 11px;
+}
+
+/* Progress dialog */
+.progress-status {
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+}
+
+.progress-detail {
+  -fx-font-size: 12px;
+  -fx-text-fill: #606060;
+}

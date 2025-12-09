@@ -35,7 +35,6 @@ public class ResourceManagementController {
     private RAGService ragService;
     private Runnable onResourcesChangedCallback;
 
-    // Handler delegates
     private ResourceValidator validator;
     private ResourceImportHandler importHandler;
     private ResourceDeletionHandler deletionHandler;
@@ -156,7 +155,6 @@ public class ResourceManagementController {
 
         String targetFileName = getTargetFileName(file);
 
-        // Check if file already exists
         if (resourceService.resourceExists(targetFileName)) {
             AlertHelper.showError("File Exists", "Cannot import file",
                     "The file '" + targetFileName
@@ -181,7 +179,6 @@ public class ResourceManagementController {
             return;
         }
 
-        // Filter out files that already exist
         List<String> conflicts = validator.findConflicts(files);
 
         if (!conflicts.isEmpty()) {

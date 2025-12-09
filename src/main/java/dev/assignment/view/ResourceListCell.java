@@ -25,13 +25,12 @@ public class ResourceListCell extends ListCell<Resource> {
         container.setAlignment(Pos.CENTER_LEFT);
 
         nameLabel = new Label();
-        nameLabel.setStyle("-fx-font-weight: normal;");
 
         spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
         countLabel = new Label();
-        countLabel.setStyle("-fx-text-fill: #909090; -fx-font-size: 11px;");
+        countLabel.getStyleClass().add("resource-count");
 
         container.getChildren().addAll(nameLabel, spacer, countLabel);
     }

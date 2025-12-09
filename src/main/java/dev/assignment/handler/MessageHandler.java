@@ -52,7 +52,6 @@ public class MessageHandler {
             return;
         }
 
-        // Check query length
         if (userMessage.length() > Constants.MAX_QUERY_LENGTH) {
             AlertHelper.showWarning("Query Too Long", "Your query exceeds the maximum length",
                     String.format("Please limit your query to %d characters. Current length: %d characters.",
@@ -77,60 +76,48 @@ public class MessageHandler {
         logger.info("Message length: {} characters", userMessage.length());
         logger.debug("Message content: {}", userMessage);
 
-        // Clear input
         messageInput.clear();
 
-        // Remove empty state message if present
         chatContainer.getChildren().removeIf(node -> node instanceof ChatAreaMessage);
 
-        // Add user message to chat
         ChatMessage userChatMessage = new ChatMessage(userMessage, true);
         ChatMessageEntry userMessageBox = new ChatMessageEntry(userChatMessage);
         chatContainer.getChildren().add(userMessageBox);
 
-        // Save user message to database
         DatabaseService databaseService = DatabaseService.getInstance();
         if (databaseService != null) {
             databaseService.saveChatMessage(currentSession.getId(), userChatMessage);
         }
 
-        // Create placeholder for AI response
         ChatMessage aiChatMessage = new ChatMessage("...", false);
         ChatMessageEntry aiMessageBox = new ChatMessageEntry(aiChatMessage);
         chatContainer.getChildren().add(aiMessageBox);
 
-        // Disable all controls while processing
         toggleAllControlsCallback.run();
         statusLabel.setText("Generating response...");
-
-        // Query RAG in background
         String finalUserMessage = userMessage;
         new Thread(() -> {
             try {
                 logger.info("Querying RAG service...");
                 dev.assignment.model.QueryResponse queryResponse = ragService.query(finalUserMessage);
-                String responseText = queryResponse.getResponse();
-                java.util.List<String> sources = queryResponse.getSources();
+                String responseText = queryResponse.response();
+                java.util.List<String> sources = queryResponse.sources();
 
                 Platform.runLater(() -> {
-                    // Update AI message with response
                     aiMessageBox.updateText(responseText);
 
-                    // Set sources if available
                     String sourcesText = null;
                     if (sources != null && !sources.isEmpty()) {
                         sourcesText = String.join(", ", sources);
                         aiMessageBox.setSources(sourcesText);
                     }
 
-                    // Create final AI message with sources and save to database
                     ChatMessage finalAiMessage = new ChatMessage(responseText, false, sourcesText);
                     DatabaseService db = DatabaseService.getInstance();
                     if (db != null) {
                         db.saveChatMessage(currentSession.getId(), finalAiMessage);
                     }
 
-                    // Re-enable all controls
                     toggleAllControlsCallback.run();
                     statusLabel.setText("Ready");
                     messageInput.requestFocus();
@@ -143,12 +130,10 @@ public class MessageHandler {
                 logger.error("Error type: {}", e.getClass().getSimpleName());
                 logger.error("Error message: {}", e.getMessage(), e);
                 Platform.runLater(() -> {
-                    // Remove placeholder AI message
                     chatContainer.getChildren().remove(aiMessageBox);
 
                     AlertHelper.showError("Error", "Failed to get response", e.getMessage());
 
-                    // Re-enable all controls
                     toggleAllControlsCallback.run();
                     statusLabel.setText("Error occurred");
                     messageInput.requestFocus();

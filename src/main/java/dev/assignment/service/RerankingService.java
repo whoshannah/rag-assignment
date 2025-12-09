@@ -30,7 +30,6 @@ public class RerankingService {
             return results;
         }
 
-        // Tokenize query
         String[] queryTokens = tokenize(query.toLowerCase());
 
         // Calculate re-ranking scores

@@ -33,41 +33,25 @@ public class SessionSidebar extends VBox {
         setPadding(new Insets(20, 0, 20, 20));
         setSpacing(0);
 
-        // Create scroll pane with session list
         scrollPane = new ScrollPane();
         scrollPane.setFitToWidth(true);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setPrefHeight(-1.0);
         scrollPane.setPrefWidth(-1.0);
-        scrollPane.setStyle("-fx-background-color: transparent;");
+        scrollPane.getStyleClass().add("scroll-pane");
         VBox.setVgrow(scrollPane, javafx.scene.layout.Priority.ALWAYS);
 
-        // Create session list container
         sessionListContainer = new VBox();
         sessionListContainer.setSpacing(6.0);
         scrollPane.setContent(sessionListContainer);
 
-        // Add margin to scroll pane
         VBox.setMargin(scrollPane, new Insets(0, 0, 20, 0));
 
-        // Create "New Session" button
         newSessionButton = new Button("New Session");
         newSessionButton.setMaxWidth(Double.MAX_VALUE);
         newSessionButton.setMnemonicParsing(false);
         newSessionButton.setOnAction(e -> handleNewSession());
         VBox.setMargin(newSessionButton, new Insets(0, 20, 0, 0));
-
-        // Add icon to button
-        try {
-            ImageView icon = new ImageView(new Image(
-                    getClass().getResourceAsStream("/dev/assignment/assets/uil--comment-plus.png")));
-            icon.setFitHeight(150.0);
-            icon.setFitWidth(18.0);
-            icon.setPreserveRatio(true);
-            newSessionButton.setGraphic(icon);
-        } catch (Exception e) {
-            // Icon not found, continue without it
-        }
 
         getChildren().addAll(scrollPane, newSessionButton);
     }
@@ -100,7 +84,7 @@ public class SessionSidebar extends VBox {
             sessionListContainer.getChildren().clear();
 
             Label errorLabel = new Label("Database unavailable");
-            errorLabel.setStyle("-fx-text-fill: #ff0000; -fx-font-size: 13px;");
+            errorLabel.getStyleClass().add("error-label");
             errorLabel.setMaxWidth(Double.MAX_VALUE);
             errorLabel.setAlignment(Pos.CENTER);
             sessionListContainer.getChildren().add(errorLabel);
@@ -111,7 +95,6 @@ public class SessionSidebar extends VBox {
             sessions = FXCollections.observableArrayList(
                     databaseService.getAllSessions());
         } catch (java.sql.SQLException e) {
-            // Database schema mismatch - likely missing column from old database
             AlertHelper.showError(
                     "Database Error",
                     "Database Schema Incompatible",
@@ -119,7 +102,6 @@ public class SessionSidebar extends VBox {
                             "Please delete the 'rag_sessions.db' file and restart the application.\\n\\n" +
                             "Error: " + e.getMessage());
 
-            // Exit the application
             javafx.application.Platform.exit();
             System.exit(1);
             return;
@@ -127,11 +109,9 @@ public class SessionSidebar extends VBox {
 
         sessionListContainer.getChildren().clear();
 
-        // Create individual SidebarSessionEntry components for each session
         if (sessions.isEmpty()) {
-            // Show "no sessions" message
             Label emptyLabel = new Label("No sessions yet.");
-            emptyLabel.setStyle("-fx-text-fill: #909090; -fx-font-size: 13px;");
+            emptyLabel.getStyleClass().add("muted-label");
             emptyLabel.setMaxWidth(Double.MAX_VALUE);
             emptyLabel.setAlignment(Pos.CENTER);
             sessionListContainer.getChildren().add(emptyLabel);
@@ -152,29 +132,20 @@ public class SessionSidebar extends VBox {
      * Handle session changes (rename, delete, etc.) and notify parent controller
      */
     private void handleSessionChanged() {
-        System.out.println("[SessionSidebar] handleSessionChanged called");
-
-        // Check if the current session still exists before reloading
         String currentSessionId = currentSession != null ? currentSession.getId() : null;
-        System.out.println("[SessionSidebar] Current session ID: " + currentSessionId);
 
         loadSessions();
 
-        // If the current session was deleted, clear it
         if (currentSessionId != null) {
             boolean sessionStillExists = sessions.stream()
                     .anyMatch(s -> s.getId().equals(currentSessionId));
-            System.out.println("[SessionSidebar] Session still exists: " + sessionStillExists);
             if (!sessionStillExists) {
                 currentSession = null;
             }
         }
 
         if (onSessionChanged != null) {
-            System.out.println("[SessionSidebar] Calling parent onSessionChanged callback");
             onSessionChanged.run();
-        } else {
-            System.out.println("[SessionSidebar] WARNING: parent onSessionChanged is null!");
         }
     }
 
@@ -201,7 +172,6 @@ public class SessionSidebar extends VBox {
                 SidebarSessionEntry sessionBox = (SidebarSessionEntry) sessionListContainer.getChildren().get(i);
                 Session session = sessions.get(i);
 
-                // Apply bold style if this is the selected session
                 boolean isSelected = currentSession != null && currentSession.getId().equals(session.getId());
                 sessionBox.updateStyling(isSelected);
             }

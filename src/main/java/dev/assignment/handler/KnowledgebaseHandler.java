@@ -60,7 +60,6 @@ public class KnowledgebaseHandler {
         logger.info("========== Initializing Session ==========");
         logger.info("Session: id={}, name='{}'", currentSession.getId(), currentSession.getName());
 
-        // Clear chat
         chatContainer.getChildren().clear();
 
         APIKeyService apiKeyService = APIKeyService.getInstance();
@@ -76,16 +75,13 @@ public class KnowledgebaseHandler {
             return;
         }
 
-        // Check if knowledge base is empty
         List<Resource> resources = resourceService.getAllResources();
         if (resources.isEmpty()) {
-            // Show empty knowledge base message
             ChatAreaMessage emptyMessage = new ChatAreaMessage(
                     "Your knowledge base is empty.\n\n" +
                             "Click 'Manage Knowledgebase' to add documents.");
             chatContainer.getChildren().add(emptyMessage);
 
-            // Disable input
             sessionStateHandler.setInputControlsDisabled(true);
             statusLabel.setText("Knowledge base is empty");
             logger.info("Knowledge base empty for session '{}' - {} resources found",
@@ -95,17 +91,13 @@ public class KnowledgebaseHandler {
 
         logger.info("Knowledge base has {} resources, proceeding with indexing", resources.size());
 
-        // Disable inputs before indexing
         sessionStateHandler.setInputControlsDisabled(true);
-        statusLabel.setText("Preparing to index...");
 
-        // Show indexing message in chat area
         ChatAreaMessage indexingMessage = new ChatAreaMessage(
                 "Indexing knowledgebase...\n\n" +
                         "Please check the bottom left corner for indexing progress.");
         chatContainer.getChildren().add(indexingMessage);
 
-        // Index knowledgebase in background with progress updates
         new Thread(() -> {
             try {
                 RAGService ragService = sessionStateHandler.getRagService();
@@ -121,7 +113,6 @@ public class KnowledgebaseHandler {
                 Platform.runLater(() -> {
                     chatContainer.getChildren().remove(indexingMessage);
 
-                    // Load chat history after indexing
                     chatHistoryHandler.loadChatHistory();
 
                     logger.info("Knowledgebase indexed successfully");
@@ -158,12 +149,10 @@ public class KnowledgebaseHandler {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/dev/assignment/fxml/manage_resources.fxml"));
             Parent root = loader.load();
 
-            // Pass resource service to the controller
             ResourceManagementController controller = loader.getController();
             controller.setResourceService(sessionStateHandler.getResourceService());
             controller.setRagService(sessionStateHandler.getRagService());
 
-            // Set callback for when resources change
             controller.setOnResourcesChangedCallback(() -> {
                 recheckKnowledgebaseStatus();
             });
@@ -207,8 +196,6 @@ public class KnowledgebaseHandler {
                         .anyMatch(node -> node instanceof ChatMessageEntry);
 
                 if (hasChatHistory) {
-                    // Preserve chat history but show empty message at the bottom
-                    // Remove any existing ChatAreaMessage
                     chatContainer.getChildren().removeIf(node -> node instanceof ChatAreaMessage);
 
                     ChatAreaMessage emptyMessage = new ChatAreaMessage(
@@ -228,13 +215,11 @@ public class KnowledgebaseHandler {
                 sessionStateHandler.setInputControlsDisabled(true);
                 statusLabel.setText("Knowledge base is empty");
             } else {
-                // Knowledge base has content - check if we need to re-enable chat
                 boolean hasEmptyMessage = chatContainer.getChildren().stream()
                         .anyMatch(node -> node instanceof ChatAreaMessage);
 
                 if (hasEmptyMessage) {
                     logger.info("Knowledge base now has content - re-enabling chat");
-                    // Remove the empty message
                     chatContainer.getChildren().removeIf(node -> node instanceof ChatAreaMessage);
                 }
 

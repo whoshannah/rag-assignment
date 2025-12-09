@@ -203,7 +203,6 @@ public class DatabaseService {
                 logger.info("Session folder deleted: {}", sessionFolder.getPath());
             }
 
-            // Delete embedding cache
             EmbeddingCacheService.deleteCache(id);
             logger.info("Session deletion complete: id={}", id);
         } catch (SQLException e) {
@@ -219,14 +218,14 @@ public class DatabaseService {
         String sql = "INSERT INTO messages (id, session_id, content, is_user, timestamp, sources) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setString(1, message.getId());
+            pstmt.setString(1, message.id());
             pstmt.setString(2, sessionId);
-            pstmt.setString(3, message.getContent());
+            pstmt.setString(3, message.content());
             pstmt.setInt(4, message.isUser() ? 1 : 0);
-            pstmt.setString(5, message.getTimestamp().toString());
-            pstmt.setString(6, message.getSources());
+            pstmt.setString(5, message.timestamp().toString());
+            pstmt.setString(6, message.sources());
             pstmt.executeUpdate();
-            logger.debug("Saved message {} for session {}", message.getId(), sessionId);
+            logger.debug("Saved message {} for session {}", message.id(), sessionId);
         } catch (SQLException e) {
             logger.error("Failed to save chat message", e);
             throw new RuntimeException("Failed to save chat message", e);

@@ -22,15 +22,12 @@ public class ChatSessionController {
 
     private static final Logger logger = LogManager.getLogger(ChatSessionController.class);
 
-    // UI Components
     private final Button manageKnowledgebaseButton;
     private final Button clearSessionButton;
     private final SessionSidebar sessionSidebar;
 
-    // Processing state
     private boolean isProcessing = false;
 
-    // Handlers
     private final SessionStateHandler sessionStateHandler;
     private final ChatHistoryHandler chatHistoryHandler;
     private final MessageHandler messageHandler;
@@ -78,8 +75,6 @@ public class ChatSessionController {
                 sessionStateHandler,
                 chatHistoryHandler);
 
-        // Set up keyboard shortcut: Ctrl+Enter (Windows/Linux) or Cmd+Enter (Mac) to
-        // send
         messageInput.setOnKeyPressed(event -> {
             if ((event.isShortcutDown() || event.isControlDown())
                     && event.getCode() == javafx.scene.input.KeyCode.ENTER) {
@@ -91,7 +86,7 @@ public class ChatSessionController {
         messageInput.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 int lineCount = newValue.split("\n", -1).length;
-                int newRowCount = Math.min(Math.max(1, lineCount), 10); // Min 1, Max 10 rows
+                int newRowCount = Math.min(Math.max(1, lineCount), 10);
                 messageInput.setPrefRowCount(newRowCount);
             }
         });

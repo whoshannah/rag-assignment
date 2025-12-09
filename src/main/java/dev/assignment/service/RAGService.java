@@ -42,18 +42,17 @@ public class RAGService {
     private final EmbeddingStore<TextSegment> embeddingStore;
     private final OpenAiChatModel chatModel;
     private final List<ChatMessage> sessionHistory;
-    private final Map<String, Long> indexedFiles; // filename -> last modified timestamp
+    private final Map<String, Long> indexedFiles;
     private final DocumentIndexingService indexingService;
     private final RerankingService rerankingService;
 
-    // Progress callback interface
     public interface ProgressCallback {
         void onProgress(String message, int current, int total);
     }
 
     private static final int MAX_RESULTS = 5;
     private static final double MIN_SCORE = 0.5;
-    private static final int MAX_RESULTS_BEFORE_RERANK = 15; // Retrieve more results for re-ranking
+    private static final int MAX_RESULTS_BEFORE_RERANK = 15;
 
     private final String sessionId;
 
@@ -78,13 +77,11 @@ public class RAGService {
         this.indexingService = new DocumentIndexingService(sessionId, embeddingModel, embeddingStore, indexedFiles);
         this.rerankingService = new RerankingService();
 
-        // Add system message
         sessionHistory.add(SystemMessage.from(
                 "You are a helpful AI assistant. Use the provided context to answer questions accurately. " +
                         "If the context doesn't contain relevant information, say so politely. " +
                         "In your response, do not use any markdown formatting. Simple plain text is preferred."));
 
-        // Load session history from database
         loadSessionHistory();
 
         EmbeddingCacheService.loadCache(sessionId, embeddingStore, indexedFiles);
@@ -94,15 +91,13 @@ public class RAGService {
      * Load session history from database and restore it to the session
      */
     private void loadSessionHistory() {
-        // Using fully qualified name to avoid confusion with
-        // dev.langchain4j.data.message.ChatMessage
         List<dev.assignment.model.ChatMessage> dbMessages = DatabaseService.getInstance().getChatHistory(sessionId);
 
         for (dev.assignment.model.ChatMessage dbMessage : dbMessages) {
             if (dbMessage.isUser()) {
-                sessionHistory.add(UserMessage.from(dbMessage.getContent()));
+                sessionHistory.add(UserMessage.from(dbMessage.content()));
             } else {
-                sessionHistory.add(AiMessage.from(dbMessage.getContent()));
+                sessionHistory.add(AiMessage.from(dbMessage.content()));
             }
         }
 
@@ -154,10 +149,8 @@ public class RAGService {
      * AI: "Melvin Chia's brother is 28 years old."
      */
     public dev.assignment.model.QueryResponse query(String userMessage) {
-        // Build contextualized query by incorporating recent session history
         String contextualizedQuery = buildContextualizedQuery(userMessage);
 
-        // Perform retrieval with single query
         Embedding queryEmbedding = embeddingModel.embed(contextualizedQuery).content();
 
         EmbeddingSearchRequest searchRequest = EmbeddingSearchRequest.builder()
@@ -170,16 +163,13 @@ public class RAGService {
         List<EmbeddingMatch<TextSegment>> relevantSegments = searchResult.matches();
         logger.debug("Retrieval found {} segments", relevantSegments.size());
 
-        // Re-rank the results using the contextualized query for consistency
         List<EmbeddingMatch<TextSegment>> rerankedSegments = rerankingService.rerank(contextualizedQuery,
                 relevantSegments);
 
-        // Take only top MAX_RESULTS after re-ranking
         if (rerankedSegments.size() > MAX_RESULTS) {
             rerankedSegments = rerankedSegments.subList(0, MAX_RESULTS);
         }
 
-        // Extract unique source file names
         Set<String> sourceFiles = new HashSet<>();
         for (EmbeddingMatch<TextSegment> match : rerankedSegments) {
             TextSegment segment = match.embedded();
@@ -190,7 +180,6 @@ public class RAGService {
         }
         logger.debug("Query matched {} segments from documents: {}", rerankedSegments.size(), sourceFiles);
 
-        // Build context from relevant segments
         StringBuilder context = new StringBuilder();
         if (!rerankedSegments.isEmpty()) {
             context.append("Relevant context:\n\n");
@@ -199,7 +188,6 @@ public class RAGService {
             }
         }
 
-        // Build the message with context for the current query
         String messageWithContext;
         if (context.length() > 0) {
             messageWithContext = context + "\nUser question: " + userMessage;
@@ -207,18 +195,13 @@ public class RAGService {
             messageWithContext = userMessage;
         }
 
-        // Add user message to session history (without RAG context to avoid
-        // duplication)
         sessionHistory.add(UserMessage.from(userMessage));
+        ;
 
         logger.debug("Sending message to chat model: {} with {} messages in history", modelName,
                 sessionHistory.size());
 
-        // Build chat request with session history + current RAG context
-        // We append the RAG context only to the current message to avoid exponential
-        // growth
         List<ChatMessage> messagesForRequest = new ArrayList<>(sessionHistory);
-        // Replace the last user message with the version that includes RAG context
         messagesForRequest.set(messagesForRequest.size() - 1, UserMessage.from(messageWithContext));
 
         ChatRequest chatRequest = ChatRequest.builder()
@@ -229,10 +212,8 @@ public class RAGService {
         AiMessage aiMessage = chatResponse.aiMessage();
         String responseText = aiMessage.text();
 
-        // Add AI response to session history
         sessionHistory.add(aiMessage);
 
-        // Return response with sources
         return new QueryResponse(responseText, new java.util.ArrayList<>(sourceFiles));
     }
 
@@ -255,29 +236,24 @@ public class RAGService {
      * @return Contextualized query string for better embedding search
      */
     private String buildContextualizedQuery(String userMessage) {
-        // If no session history beyond system message, return as-is
         if (sessionHistory.size() <= 1) {
             return userMessage;
         }
 
-        // Build context from recent session (last 2 exchanges = 4 messages)
-        // This helps resolve pronouns and implicit references
         StringBuilder contextBuilder = new StringBuilder();
-        int startIdx = Math.max(1, sessionHistory.size() - 4); // Skip system message at index 0
+        int startIdx = Math.max(1, sessionHistory.size() - 4);
 
         for (int i = startIdx; i < sessionHistory.size(); i++) {
             ChatMessage msg = sessionHistory.get(i);
             if (msg instanceof UserMessage) {
                 contextBuilder.append("User asked: ").append(((UserMessage) msg).singleText()).append(" ");
             } else if (msg instanceof AiMessage) {
-                // Include a brief snippet of AI response for context
                 String aiText = ((AiMessage) msg).text();
                 String snippet = aiText.length() > 100 ? aiText.substring(0, 100) + "..." : aiText;
                 contextBuilder.append("Assistant answered: ").append(snippet).append(" ");
             }
         }
 
-        // Append current question
         contextBuilder.append("Current question: ").append(userMessage);
 
         String contextualizedQuery = contextBuilder.toString();

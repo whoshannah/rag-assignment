@@ -19,10 +19,9 @@ public final class ChatMessageEntry extends VBox {
     private final boolean isUserMessage;
 
     public ChatMessageEntry(ChatMessage message) {
-        this.messageLabel = new Label(message.getContent());
+        this.messageLabel = new Label(message.content());
         this.isUserMessage = message.isUser();
 
-        // Create container for message alignment
         this.messageContainer = new HBox();
 
         // Set alignment based on message type
@@ -41,12 +40,11 @@ public final class ChatMessageEntry extends VBox {
 
         messageContainer.getChildren().add(messageLabel);
 
-        // Add message container first
         getChildren().add(messageContainer);
 
         // Add sources label if available (for AI messages)
         if (!message.isUser() && message.hasSources()) {
-            setSources(message.getSources());
+            setSources(message.sources());
         }
 
         setSpacing(0);
@@ -75,7 +73,7 @@ public final class ChatMessageEntry extends VBox {
         } else if (!isUserMessage) {
             // Create the sources label if it doesn't exist yet (for streaming responses)
             sourcesLabel = new Label(sources);
-            sourcesLabel.setStyle("-fx-text-fill: #909090; -fx-font-size: 11px;");
+            sourcesLabel.getStyleClass().add("sources-label");
             sourcesLabel.setMaxWidth(Double.MAX_VALUE);
             sourcesLabel.setAlignment(Pos.CENTER_LEFT);
             sourcesLabel.setPadding(new Insets(2, 0, 5, 0));
@@ -83,7 +81,6 @@ public final class ChatMessageEntry extends VBox {
             sourcesLabel.setMaxWidth(500);
             sourcesLabel.setMinHeight(Region.USE_PREF_SIZE);
 
-            // Add the sources label before the message container
             getChildren().add(0, sourcesLabel);
         }
     }

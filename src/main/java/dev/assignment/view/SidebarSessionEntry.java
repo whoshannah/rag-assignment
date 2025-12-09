@@ -34,7 +34,7 @@ public class SidebarSessionEntry extends HBox {
         this.onSessionChanged = onSessionChanged;
 
         setAlignment(Pos.CENTER);
-        setStyle("-fx-cursor: hand; -fx-padding: 4 10 0 0;");
+        getStyleClass().add("sidebar-session-entry");
 
         nameLabel = new Label(session.getName());
         MenuButton menuButton = createMenuButton();
@@ -57,7 +57,7 @@ public class SidebarSessionEntry extends HBox {
         menuButton.setContentDisplay(javafx.scene.control.ContentDisplay.GRAPHIC_ONLY);
         menuButton.setGraphicTextGap(0.0);
         menuButton.setMnemonicParsing(false);
-        menuButton.setStyle("-fx-background-color: transparent;");
+        menuButton.getStyleClass().add("menu-button-transparent");
 
         try {
             menuButton.getStylesheets().add(
@@ -67,17 +67,6 @@ public class SidebarSessionEntry extends HBox {
         }
 
         menuButton.setPadding(new Insets(0, -4, 0, -4));
-
-        try {
-            ImageView icon = new ImageView(new Image(
-                    getClass().getResourceAsStream("/dev/assignment/assets/uil--ellipsis-v.png")));
-            icon.setFitHeight(16);
-            icon.setFitWidth(16);
-            icon.setPreserveRatio(true);
-            menuButton.setGraphic(icon);
-        } catch (Exception e) {
-            // Icon not found, continue without it
-        }
 
         MenuItem renameItem = new MenuItem("Edit");
         renameItem.setOnAction(e -> handleEdit());
@@ -94,14 +83,8 @@ public class SidebarSessionEntry extends HBox {
         EditSessionDialog dialog = new EditSessionDialog(session);
 
         if (dialog.showAndWait()) {
-            System.out.println("[SidebarSessionEntry] Edit confirmed, triggering refresh");
-
-            // Notify about the change - this will reload sessions from database
             if (onSessionChanged != null) {
-                System.out.println("[SidebarSessionEntry] Calling onSessionChanged callback");
                 onSessionChanged.run();
-            } else {
-                System.out.println("[SidebarSessionEntry] WARNING: onSessionChanged is null!");
             }
         }
     }
@@ -116,11 +99,9 @@ public class SidebarSessionEntry extends HBox {
                 "This will permanently delete the session and all its knowledgebase files.\n\n" +
                         "To confirm, please type the session name below:");
 
-        // Create a TextField for user input
         TextField confirmationField = new TextField();
         confirmationField.setPromptText("Enter session name");
 
-        // Create a VBox to hold the content and text field
         VBox content = new VBox(10);
         content.getChildren().addAll(
                 new Label("This will permanently delete the session and all its knowledgebase files."),
@@ -129,10 +110,8 @@ public class SidebarSessionEntry extends HBox {
 
         alert.getDialogPane().setContent(content);
 
-        // Disable OK button by default
         alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
 
-        // Enable OK button only when the entered text matches the session name
         confirmationField.textProperty().addListener((observable, oldValue, newValue) -> {
             alert.getDialogPane().lookupButton(ButtonType.OK)
                     .setDisable(!newValue.trim().equals(session.getName()));
@@ -158,10 +137,11 @@ public class SidebarSessionEntry extends HBox {
     }
 
     public void updateStyling(boolean isSelected) {
+        nameLabel.getStyleClass().removeAll("session-name", "session-name-selected");
         if (isSelected) {
-            nameLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 13px;");
+            nameLabel.getStyleClass().add("session-name-selected");
         } else {
-            nameLabel.setStyle("-fx-font-size: 13px;");
+            nameLabel.getStyleClass().add("session-name");
         }
     }
 

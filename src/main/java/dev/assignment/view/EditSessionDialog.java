@@ -27,7 +27,6 @@ public class EditSessionDialog {
         dialog.setTitle("Edit Session");
         dialog.setHeaderText("Edit session settings");
 
-        // Create form fields
         Label sessionNameLabel = new Label("Session Name:");
         nameField = new TextField(session.getName());
         nameField.setPrefWidth(300);
@@ -38,7 +37,6 @@ public class EditSessionDialog {
         modelComboBox.setValue(session.getModel());
         modelComboBox.setPrefWidth(300);
 
-        // Create layout
         VBox content = new VBox(10);
         content.setPadding(new Insets(10));
         content.getChildren().addAll(
@@ -49,7 +47,6 @@ public class EditSessionDialog {
 
         dialog.getDialogPane().setContent(content);
 
-        // Disable OK button if name is empty
         dialog.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
         nameField.textProperty().addListener((observable, oldValue, newValue) -> {
             dialog.getDialogPane().lookupButton(ButtonType.OK)
@@ -79,17 +76,8 @@ public class EditSessionDialog {
         String newName = nameField.getText().trim();
         String newModel = modelComboBox.getValue();
 
-        System.out.println("[EditSessionDialog] Updating session:");
-        System.out.println("  - Name: " + newName);
-        System.out.println("  - Model: " + newModel);
-
         if (!newName.isEmpty()) {
-            // Update database - the in-memory session will be refreshed by
-            // handleSessionChanged()
             DatabaseService.getInstance().updateSession(session.getId(), newName, newModel);
-
-            System.out.println("[EditSessionDialog] Database updated, session will be refreshed by callback");
-
             return true;
         }
 

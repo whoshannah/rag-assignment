@@ -37,7 +37,6 @@ public class ResourceImportHandler {
                 if (progressDialog.isCancelled())
                     return;
 
-                // Import resource
                 resourceService.importResource(file, message -> {
                     if (!progressDialog.isCancelled()) {
                         Platform.runLater(() -> progressDialog.updateProgress(1, 2, message));
@@ -49,10 +48,8 @@ public class ResourceImportHandler {
                     return;
                 }
 
-                // Index if available
                 indexFile(targetFileName, progressDialog);
 
-                // Show success
                 Platform.runLater(() -> {
                     progressDialog.close();
                     if (!progressDialog.isCancelled()) {
@@ -114,13 +111,11 @@ public class ResourceImportHandler {
             int currentIndex = i + 1;
 
             try {
-                // Skip if file already exists
                 if (resourceService.resourceExists(metadata.targetFileName)) {
                     result.skipped++;
                     continue;
                 }
 
-                // Import file
                 Platform.runLater(() -> progressDialog.updateProgress(currentIndex, total,
                         "Processing " + file.getName() + "..."));
 
@@ -136,7 +131,6 @@ public class ResourceImportHandler {
                 if (progressDialog.isCancelled())
                     break;
 
-                // Index file
                 if (ragService != null) {
                     Platform.runLater(() -> progressDialog.updateProgress(currentIndex, total,
                             "Indexing " + file.getName() + "..."));
@@ -153,7 +147,6 @@ public class ResourceImportHandler {
                 System.err.println("Failed to import " + file.getName() + ": " + e.getMessage());
             }
 
-            // Brief pause for UI responsiveness
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
