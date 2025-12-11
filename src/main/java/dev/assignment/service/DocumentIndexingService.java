@@ -4,7 +4,7 @@ import static dev.langchain4j.data.document.splitter.DocumentSplitters.recursive
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
+//import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -211,7 +211,8 @@ public class DocumentIndexingService {
      * Index a single document
      */
     private void indexDocument(File file) throws IOException {
-        String content = Files.readString(file.toPath());
+        String content = ResourceService.readFileContent(file);
+        //String content = Files.readString(file.toPath());
 
         Metadata metadata = new Metadata();
         metadata.put("fileName", file.getName());

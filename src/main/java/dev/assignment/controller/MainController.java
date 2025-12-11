@@ -182,13 +182,7 @@ public class MainController {
 
     @FXML
     private void handleSendMessage() {
-        showLoading();
-        new Thread(() -> {
-            chatSessionController.handleSendMessage();
-            javafx.application.Platform.runLater(() -> {
-                hideLoading();
-            });
-        }).start();
+        chatSessionController.handleSendMessage();
     }
 
     @FXML

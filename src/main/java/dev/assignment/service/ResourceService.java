@@ -11,6 +11,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 
 import dev.assignment.model.Resource;
 import javafx.stage.FileChooser;
@@ -33,7 +35,8 @@ public class ResourceService {
 
     private static final FileChooser.ExtensionFilter[] VALID_EXTENSIONS = new FileChooser.ExtensionFilter[] {
             new FileChooser.ExtensionFilter("Text Files", "*.txt"),
-            new FileChooser.ExtensionFilter("Markdown Files", "*.md", "*.mdx")
+            new FileChooser.ExtensionFilter("Markdown Files", "*.md", "*.mdx"),
+            new FileChooser.ExtensionFilter("PDF Files", "*.pdf"),
     };
 
     /**
@@ -215,6 +218,31 @@ public class ResourceService {
             return fileName.substring(lastDotIndex);
         }
         return "";
+    }
+
+    /**
+     * Reads the file content of a file, handling PDF format files specifically
+     */
+    public static String readFileContent(File file) throws IOException {
+        String fileExtension = getFileExtension(file.getName()).toLowerCase();
+        if (fileExtension.equals(".pdf")) {
+            try (PDDocument document = PDDocument.load(file)) {
+                PDFTextStripper pdfStripper = new PDFTextStripper();
+                return pdfStripper.getText(document);
+            }
+        } else {
+            return Files.readString(file.toPath());
+        }
+    }
+    
+    /**
+     * Extract text content from a PDF file
+     */
+    private static String readPdfContent(File pdfFile) throws IOException {
+        try (PDDocument document = PDDocument.load(pdfFile)) {
+            PDFTextStripper pdfStripper = new PDFTextStripper();
+            return pdfStripper.getText(document);
+        }
     }
 
 }

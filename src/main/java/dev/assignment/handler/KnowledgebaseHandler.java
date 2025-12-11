@@ -98,6 +98,7 @@ public class KnowledgebaseHandler {
                         "Please check the bottom left corner for indexing progress.");
         chatContainer.getChildren().add(indexingMessage);
 
+     
         new Thread(() -> {
             try {
                 RAGService ragService = sessionStateHandler.getRagService();
@@ -117,12 +118,13 @@ public class KnowledgebaseHandler {
 
                     logger.info("Knowledgebase indexed successfully");
                 });
-            } catch (IOException e) {
+            } catch (Exception e) { 
                 logger.error("Error indexing knowledgebase", e);
                 Platform.runLater(() -> {
                     chatContainer.getChildren().remove(indexingMessage);
                     statusLabel.setText("Error indexing knowledgebase");
-                    sessionStateHandler.setInputControlsDisabled(false);
+                    
+                    sessionStateHandler.setInputControlsDisabled(false); 
 
                     AlertHelper.showError(
                             "Indexing Error",

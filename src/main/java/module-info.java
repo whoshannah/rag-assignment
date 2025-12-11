@@ -9,7 +9,8 @@ module dev.assignment {
     requires transitive org.slf4j; // must add slf4j
     requires transitive java.net.http; // needed if HttpTimeoutException occurs
     requires com.fasterxml.jackson.core; // needed if assistant is null
-
+    requires org.apache.pdfbox; // PDFBox for PDF handling
+    
     // SQLite JDBC for database storage
     requires java.sql;
 

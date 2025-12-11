@@ -3,6 +3,7 @@ package dev.assignment.model;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import dev.assignment.service.ResourceService;
 
 /**
  * Model class representing a resource file in the knowledgebase
@@ -68,9 +69,11 @@ public class Resource {
         }
     }
 
+
     private void loadContent() throws IOException {
         if (file != null && file.exists()) {
-            content = Files.readString(file.toPath());
+            // Use the centralized file reading logic from ResourceService
+            content = ResourceService.readFileContent(file);
         } else {
             throw new IOException("File not found: " + fileName);
         }
